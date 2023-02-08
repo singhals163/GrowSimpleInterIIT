@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+        integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+        crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+          
+    
+    <link rel="stylesheet" href=".css/style.css">  
+    <style>
+        body {
+    background-color: rgb(193, 220, 238);
+             }
+             img{
+                border-radius: 5px;
+             }
+        button {
+    background-color: #1da121; /* Green */
+    border: none;
+    color: rgb(27, 3, 3);
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    font-size: 16px;
+    border-radius: 10px;
+    box-shadow: 1px 3px 3px;
+    
+    left:200px;
+    position: relative;
+    
+    
+    
+         }
+         button:hover{
+            padding: 14px 30px;
+            animation: ease-in-out;
+            transition: all 0.5s;
+            background-color: #1b7e1e;
+            
+         }
+         p{
+            background-color: #ffffff; 
+            padding: 12px 30px;
+            margin-left: 5px;
+            margin-right: 5px;
+            text-align: center;
+            font-size: 2rem;
+            width: 6rem;
+            border-radius: 5px;
+         }
+         .button1{
+            left: 10%;
+            
+         }
+         .button2{
+            margin-left: 15px;
+            left:10%;
+         }
+         /* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  margin-left: 1500px;
+  margin-top: -700px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+    </style>
+</head>
+
+<body>
+    <div>
+        <p class="uuu" id="qqq">Init</p>
+    <div>
+    <div id="Page1" class="messages">
+    <div class="button1">
+    
+        <button id="initialise">Initialise</button>
+        <div class = 'video' style="margin-left: 900px;margin-top: -30px;">
+            <img id="photo"  width="400"  height="300">
+            <h1>Depth_Image</h1>
+        </div>
+    </div>
+    <div class="button2">
+        <button id="config">Config</button>
+        <div class = 'video2' style="margin-left: 900px;margin-top: -30px;">
+            <img id="photo2"  width="400"  height="300">
+            <h1>RGb_Image</h1>
+        </div>
+    </div>
+        </div>
+        
+    <div id="Page2" style="display:none">
+        <div style="display: inline-block;">
+            
+        <label class="switch" style="display: inline-block;">
+            <input type="checkbox">
+            <span class="slider round"></span>
+          </label>
+          <h2 style="display: inline-block;">Model1 /</h2>
+          <h2 style="display: inline-block;">Model2</h2>
+        </div>
+        <div class="button1">
+            <button id="init2">Init2</button>
+
+            <div class = 'video' style="margin-left: 900px;margin-top: -30px;">
+                <img id="photo3"  width="400"  height="300">
+                <h1>Depth_Image</h1>
+            </div>
+        </div>
+        
+        <div class="button2">
+
+        <button id="calc_vol">Volume</button>
+        <div class = 'video2' style="margin-left: 900px;margin-top: -30px;">
+            <img id="photo4"  width="400"  height="300">
+            <h1>RGb_Image</h1>
+        </div>
+
+    </div>
+    
+   
+    <script>
+        const socket = io();
+
+        let messageContainer = document.querySelector(".messages");
+
+        
+    
+        const qqq = document.getElementById("qqq")
+        const config = document.getElementById("config")
+        const init2= document.getElementById("init2")
+        const scan=document.getElementById("scan")
+        const initialise=document.getElementById("initialise")
+        const calc_vol=document.getElementById("calc_vol")
+        const photo=document.querySelector("#photo")
+        const photo2=document.querySelector("#photo2")
+
+        config.addEventListener("click", () => {
+            socket.emit("config")
+            document.getElementById("Page1").style.display='none';
+            document.getElementById("Page2").style.display='';
+
+        })
+        init2.addEventListener("click",()=>{
+            socket.emit("init2")
+            qqq.innerHTML="Scanning..."
+        })
+        calc_vol.addEventListener("click",()=>{
+            socket.emit("calc_vol")
+        })
+        initialise.addEventListener("click", () => {
+            socket.emit("initialise")
+            qqq.innerHTML="Init..."
+        })
+        socket.on("initialise", (c) => {
+            qqq.innerHTML = c;
+
+        })
+        socket.on("calc_vol", (c)=>{
+            let messageElement = document.createElement("p")
+            messageElement.innerText = c
+            messageContainer.appendChild(messageElement)
+        })
+        socket.on("qwer", (c)=>{
+            qqq.innerHTML=c;
+        })
+        socket.on('response_back', function(image, img2){
+                photo.setAttribute('src', image );
+                photo2.setAttribute('src', img2 );
+
+            })
+
+        socket.on('response_back2', function(image, img2){
+            const photo3=document.querySelector("#photo3")
+        const photo4=document.querySelector("#photo4")
+                photo3.setAttribute('src', image );
+                photo4.setAttribute('src', img2 );
+
+        })
+    </script>
+</body>
+
+</html>

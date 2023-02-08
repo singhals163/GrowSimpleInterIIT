@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import image_segmentation
 import top_view
-import object_classifcation
 
 # find the dimensions of object
 def find_dimensions(depth_image, metric_distance, metric_distance_initial):
@@ -25,23 +24,28 @@ def find_dimensions(depth_image, metric_distance, metric_distance_initial):
 def find_cuboid_volume(area, obj_height):
     volume = area*obj_height
     print("cuboid area: ", area, " height: ", obj_height, " volume: ", volume)
+    return volume
 
 # calcualte sphere's volume
 def find_sphere_volume(area, obj_height):
     volume = np.pi*(obj_height**3)/6
     print("sphere diameter: ", obj_height, " volume: ", volume)
+    return volume
 
 # calculate cylinder's volume
 def find_cylinder_volume(area, obj_height):
     volume = area*obj_height*np.pi/4
     print("cylinder area: ", area, " height: ", obj_height, " volume: ", volume)
+    return volume
 
 # calculate prism's volume
 def find_prism_volume(area, obj_height):
     volume = area*obj_height*0.5
     print("prism area: ", area, " height: ", obj_height, " volume: ", volume)
+    return volume
 
 # calculate pyramid's volume
 def find_pyramid_volume(area, obj_height):
     volume = area*obj_height/3
     print("pyramid area: ", area, " height: ", obj_height, " volume: ", volume)
+    return volume

@@ -13,8 +13,8 @@ from tensorflow.keras.optimizers import Adam
 tf.config.run_functions_eagerly(True)
 from matplotlib import pyplot as plt
 
-import torch
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+#import torch
+#device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 ############## load model #############
