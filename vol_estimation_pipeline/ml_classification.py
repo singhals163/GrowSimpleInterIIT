@@ -18,7 +18,7 @@ from matplotlib import pyplot as plt
 
 
 ############## load model #############
-resnet_model = tf.keras.models.load_model("./object_classifier2.h5")
+resnet_model = tf.keras.models.load_model("./object_classifier3.h5")
 
 ############## classifying helper function #############
 def classify_shape(depth_image):

@@ -5,7 +5,7 @@ app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 import numpy as np
 import os
-import ml_classifcation as predict2
+import ml_classification as predict2
 import open3d as o3d
 from importlib import reload  # reload
 import cv2
