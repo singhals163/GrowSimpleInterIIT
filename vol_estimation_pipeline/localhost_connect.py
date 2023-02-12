@@ -11,12 +11,15 @@ from importlib import reload  # reload
 import cv2
 import calculate_volume1
 import operate_kinect
-# import predict
-
+#import predict
+import dead_weights
 # from predict import *
-
-
-# import stream
+f = open("saved_data.txt", "w") 
+f.close()
+portname="/dev/ttyACM0" #arduino port for dead-weight
+vol=0
+area=0
+object_height=0 
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -26,13 +29,23 @@ metric_distance_initial = None
 
 r = 0
 
+wght=0
 
 @socketio.on("config")
 def config():
     global r
     r = 1
-
-
+msg="" 
+@socketio.on("message")
+def sendMessage(message):
+    global msg
+    msg=message
+@socketio.on("save")
+def sav():
+     global area, msg, object_height, vol, wght
+     f = open("saved_data.txt", "a") 
+     f.write(msg+" {} {} {} {}\n".format(area,object_height,vol, wght))
+     f.close()
 @socketio.on("initialise")
 def initialise():
     global metric_distance_initial, r
@@ -72,20 +85,24 @@ def change():
         pred=0
     if pred == 0:
         pred=1
+@socketio.on("weight")
+def wchange():
+    global wght
+    wght=dead_weights.get_dead_weights(portname)
+    socketio.emit("weight", wght)       
 @socketio.on("calc_vol")
 def calc_vol():
     global r2
     r2 = 1
+    global vol
     vol = 0
-    # send(69,broadcast=True)
-
-    global object_id, depth_image, metric_distance, metric_distance_initial, raw_depth
+    global object_id, depth_image, metric_distance, metric_distance_initial, raw_depth, area, object_height
 
     area, object_height, segmented_depth_map = calculate_volume1.find_dimensions(depth_image, metric_distance,
                                                                                  metric_distance_initial)
     xyz, uv = depth_transformation.depth2xyzuv(raw_depth)
     print(np.asarray(xyz).shape)
-    pcd = o3d.geometry.PointCloud()  # create point cloud object
+    pcd = o3d.geometry.PointCloud() 
     pcd.points = o3d.utility.Vector3dVector(xyz)
     o3d.io.write_point_cloud("678.ply",pcd)
     object_id=predict2.classify_shape(segmented_depth_map)
@@ -128,9 +145,9 @@ def calc_vol():
     # send("69", broadcast=True)
     vol=vol//1
     vol=int(abs(vol))
-    vol=str(vol)+"cm3"
-    print(vol)
-    socketio.emit("qwer", vol)
+    vol1=str(vol)+"cm3"
+    print(vol1)
+    socketio.emit("qwer", vol1)
 
 
 @socketio.on("init2")

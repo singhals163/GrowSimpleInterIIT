@@ -2,4 +2,4 @@
 
 source ./volume_estimation/bin/activate
 cd ./volume_estimation/vol_estimation_pipeline
-python3 main.py
+python3 localhost_connect.py

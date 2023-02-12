@@ -16,7 +16,7 @@
     <link rel="stylesheet" href=".css/style.css">  
     <style>
         body {
-    background-color: rgb(193, 220, 238);
+    background-color: #555555;
              }
              img{
                 border-radius: 5px;
@@ -142,34 +142,47 @@ input:checked + .slider:before {
         <button id="initialise">Initialise</button>
         <div class = 'video' style="margin-left: 900px;margin-top: -30px;">
             <img id="photo"  width="400"  height="300">
-            <h1>Depth_Image</h1>
+            <h1 style="color:#ffffff">Depth_Image</h1>
         </div>
     </div>
     <div class="button2">
         <button id="config">Config</button>
         <div class = 'video2' style="margin-left: 900px;margin-top: -30px;">
             <img id="photo2"  width="400"  height="300">
-            <h1>RGb_Image</h1>
+            <h1 style="color:#ffffff">RGb_Image</h1>
         </div>
     </div>
         </div>
         
     <div id="Page2" style="display:none">
+        <div class="messages">
+            <input placeholder="Object_ID" id="messageInput" />
+            <div class="button1">
+                <button id="save" style="margin-top: -50px;">Save</button>
+            </div>
+            
+            <div class="button1" style="margin-left: 1500px;">
+                <p class="uuu" id="qqw"></p>
+                <button id="weight" style="margin-top: -600px; margin-left: 0px; display: inline-block; ">Weight</button>
+            </div>
+          
+        </div>
+        
         <div style="display: inline-block;">
             
         <label class="switch" style="display: inline-block;">
             <input type="checkbox">
             <span class="slider round"></span>
           </label>
-          <h2 style="display: inline-block;">Model1 /</h2>
-          <h2 style="display: inline-block;">Model2</h2>
+          <h2 style="display: inline-block; color:#ffffff">Model1 /</h2>
+          <h2 style="display: inline-block; color:#ffffff;">Model2</h2>
         </div>
         <div class="button1">
             <button id="init2">Init2</button>
 
             <div class = 'video' style="margin-left: 900px;margin-top: -30px;">
                 <img id="photo3"  width="400"  height="300">
-                <h1>Depth_Image</h1>
+                <h1 style="color:#ffffff">Depth_Image</h1>
             </div>
         </div>
         
@@ -178,7 +191,7 @@ input:checked + .slider:before {
         <button id="calc_vol">Volume</button>
         <div class = 'video2' style="margin-left: 900px;margin-top: -30px;">
             <img id="photo4"  width="400"  height="300">
-            <h1>RGb_Image</h1>
+            <h1  style="color:#ffffff">RGb_Image</h1>
         </div>
 
     </div>
@@ -188,12 +201,22 @@ input:checked + .slider:before {
         const socket = io();
 
         let messageContainer = document.querySelector(".messages");
-
+        let messageInput = document.getElementById("messageInput")
+        messageInput.addEventListener("keypress", (e) => {
+            if (e.which === 13) {
+                socket.emit("message", messageInput.value)
+                
+            }
+        })
         
     
         const qqq = document.getElementById("qqq")
         const config = document.getElementById("config")
         const init2= document.getElementById("init2")
+        const save= document.getElementById("save")
+        const weight= document.getElementById("weight")
+        const qqw = document.getElementById("qqw")
+
         const scan=document.getElementById("scan")
         const initialise=document.getElementById("initialise")
         const calc_vol=document.getElementById("calc_vol")
@@ -210,6 +233,13 @@ input:checked + .slider:before {
             socket.emit("init2")
             qqq.innerHTML="Scanning..."
         })
+        save.addEventListener("click",()=>{
+            socket.emit("save")
+            qqq.innerHTML="Saved"
+        })
+        weight.addEventListener("click",()=>{
+            socket.emit("weight")
+        })
         calc_vol.addEventListener("click",()=>{
             socket.emit("calc_vol")
         })
@@ -221,10 +251,8 @@ input:checked + .slider:before {
             qqq.innerHTML = c;
 
         })
-        socket.on("calc_vol", (c)=>{
-            let messageElement = document.createElement("p")
-            messageElement.innerText = c
-            messageContainer.appendChild(messageElement)
+        socket.on("weight", (c)=>{
+            qqw.innerHTML=c;
         })
         socket.on("qwer", (c)=>{
             qqq.innerHTML=c;
